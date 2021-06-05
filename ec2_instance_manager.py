@@ -29,7 +29,7 @@ def create_instance():
         MinCount=1,
         MaxCount=1,
         InstanceType="t2.micro",
-        KeyName="ec2-key-pair"
+        KeyName="my_ec2_key"
     )
     print("Done creating instance")
     print("Instance id:", instances["Instances"][0]["InstanceId"])
@@ -58,7 +58,7 @@ def stop_and_terminate(instance_id):
     terminate_instance(instance_id)
 
 def bulk_stop_and_terminate(instance_ids):
-    instance_ids.remove("i-0a4039b7c8b46a8df")
+    instance_ids.remove("i-0c6fe4c893fc48b1d")
     print("Deleting these instances", instance_ids)
     for i in instance_ids:
         stop_instance(i)
@@ -90,7 +90,7 @@ def get_running_instances():
             
 
 #create_key_pair()
-#create_instance()
+create_instance()
 #get_public_ip("i-096b2fa8bbc536c4b")
 
 
@@ -98,5 +98,5 @@ def get_running_instances():
 #terminate_instance("i-096b2fa8bbc536c4b")
 
 #bulk_create_instances(5)
-instance_list = get_running_instances()
+#instance_list = get_running_instances()
 #bulk_stop_and_terminate(instance_list)
