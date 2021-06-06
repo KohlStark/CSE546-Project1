@@ -4,11 +4,9 @@ import main
 
 # This function gets the number of messages currently in the queue
 def get_req_queue_size():
-    
     client = main.get_sqs_client()
     response = client.receive_message(
         QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
-        
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -18,10 +16,21 @@ def get_req_queue_size():
         VisibilityTimeout=10,
         WaitTimeSeconds=10,
     )
+    print(response)
+    flag = False
+    size = 0
+    return_statement = ''
+    try:
+        # Parsing json to get size:
+        size = len(response['Messages'])
+    except:
+        flag = True
+        return_statement = "Currently the size of the request queue is 0."
 
-    # Parsing json to get size:
-    size = len(response['Messages'])
-    return size
+    if flag == False:
+        return size
+    else:
+        return return_statement
 
 
 # This function converts a jpeg image to a string
@@ -38,16 +47,15 @@ def convert_image_to_string(file):
 
 # This function sends an image to the Request Queue
 def send_image_to_request_queue():
-    #import main
+    import main
     resource = main.get_sqs_resource()
 
-    file = 'test_2.JPEG'
+    file = 'test_0.JPEG'
     converted_string = convert_image_to_string(file)
 
     # Sending image to request queue:
     queue = resource.get_queue_by_name(QueueName='request_queue_official.fifo')
     response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
-    print("image sent to queue")
     return response
 
 # This function deletes an image from the request Queue
@@ -55,8 +63,7 @@ def delete_request_message():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        #QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -66,24 +73,60 @@ def delete_request_message():
         VisibilityTimeout=10,
         WaitTimeSeconds=10,
     )
-    print("PRINTING: ")
 
     # Asking user which message they want to delete:
     message_index = input("Enter the index of the message you want to delete: ")
     message_index = int(message_index)
-    message = response['Messages'][message_index]
 
-    receipt_handle = message['ReceiptHandle']
+    try:
+        message = response['Messages'][message_index]
 
-    # Deleting message:
-    client.delete_message(
-        #QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
-        ReceiptHandle=receipt_handle
+        receipt_handle = message['ReceiptHandle']
+
+        # Deleting message:
+        client.delete_message(
+            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+            ReceiptHandle=receipt_handle
+        )
+        r = f' Deleted message at index: {message_index} '
+        print(r)
+    except:
+        print("No results are currently in the request queue!")
+
+    return ''
+
+# This function deletes all the messages currently in the request queue
+def delete_all_request_message():
+    # Retrieving all messages in queue:
+    client = main.get_sqs_client()
+    response = client.receive_message(
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        AttributeNames=[
+        ],
+        MessageAttributeNames=[
+            'string'
+        ],
+        MaxNumberOfMessages=10,
+        VisibilityTimeout=10,
+        WaitTimeSeconds=10,
     )
 
-    r = f' Deleted message at index: {message_index} '
-    return r
+    try:
+        length_queue = len(response['Messages'])
+        for i in range(0, length_queue):
+            message = response['Messages'][i]
+            receipt_handle = message['ReceiptHandle']
+
+            # Deleting message:
+            client.delete_message(
+                QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+                ReceiptHandle=receipt_handle
+            )
+
+            print(f' Deleted message at index: {i} ')
+    except:
+        print("No messages currently in the request queue!")
+    return ' '
 
 def sqs_client():
     client = main.get_sqs_client()
@@ -122,12 +165,11 @@ def get_all_results(request):
     return all_results
 
 
-#request = sqs_client()
-#first_result = get_first_result(request)
-#print(first_result)
-
-#all_results = get_all_results(request)
-#print(all_results)
-
+'''
+length = get_req_queue_size()
+print(length)
 #send_image_to_request_queue()
-#delete_request_message()
+delete_all_request_message()
+length = get_req_queue_size()
+print(length)
+'''
