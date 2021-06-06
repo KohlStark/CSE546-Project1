@@ -5,16 +5,10 @@ def create_key_pair():
     print("Creating key pair")
     ec2_client = boto3.client("ec2", region_name="us-east-1")
     key_pair = ec2_client.create_key_pair(KeyName="my_ec2_key")
-
-    private_key = key_pair["KeyMaterial"]
-
-    # write private key to file with 400 permissions
-    
-    
+    private_key = key_pair["KeyMaterial"]    
     private_key_file=open("my_ec2_key","w")
     private_key_file.write(private_key)
     private_key_file.close
-
     print("Finished creating key pair")
 
 def get_public_ip(instance_id):
@@ -67,23 +61,6 @@ def bulk_stop_instances(instance_ids):
     print("Stopping these instances", instance_ids)
     for i in instance_ids:
         stop_instance(i)
-
-# def terminate_instance(instance_id):
-#     print("Terminating instance:", instance_id)
-#     ec2_client = boto3.client("ec2", region_name="us-east-1")
-#     response = ec2_client.terminate_instances(InstanceIds=[instance_id])
-#     print(response)
-
-# def stop_and_terminate(instance_id):
-#     stop_instance(instance_id)
-#     terminate_instance(instance_id)
-
-# def bulk_stop_and_terminate(instance_ids):
-#     instance_ids.remove("i-0c6fe4c893fc48b1d")
-#     print("Deleting these instances", instance_ids)
-#     for i in instance_ids:
-#         stop_instance(i)
-#         terminate_instance(i)
 
 def get_running_instances():
     instance_list = []
