@@ -169,4 +169,4 @@ all_results = get_all_results(response)
 #Converting string back to its jpeg file form
 string = convert_string_to_jpeg(str(first_result['Message Body']))
 print(string)
-''''''
+'''
