@@ -40,8 +40,21 @@ def get_all_results(response):
     return all_results
 
 
+# This function converts the string image to it's original format
+def convert_string_to_jpeg(converted_string):
+    import base64
+
+    image_data = base64.b64decode(converted_string)
+    image_filename = 'test_0_converted.JPEG'
+    with open(image_filename, 'wb') as f:
+        f.write(image_data)
+
+    return image_filename
+
+
 response = sqs_client()
 first_result = get_first_result(response)
-print(first_result)
 all_results = get_all_results(response)
-print(all_results)
+
+#Converting string back to its jpeg file form
+convert_string_to_jpeg(str(first_result['Message Body']))
