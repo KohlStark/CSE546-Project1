@@ -154,19 +154,3 @@ def delete_all_response_messages():
     except:
         print("No results are currently in the request queue!")
     return ' '
-
-'''
-size = get_res_queue_size()
-print(size)
-delete_response_message()
-size = get_res_queue_size()
-print(size)
-
-response = sqs_client()
-first_result = get_first_result(response)
-all_results = get_all_results(response)
-
-#Converting string back to its jpeg file form
-string = convert_string_to_jpeg(str(first_result['Message Body']))
-print(string)
-'''

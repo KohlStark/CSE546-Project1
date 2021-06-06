@@ -164,12 +164,3 @@ def get_all_results(request):
 
     return all_results
 
-
-'''
-length = get_req_queue_size()
-print(length)
-#send_image_to_request_queue()
-delete_all_request_message()
-length = get_req_queue_size()
-print(length)
-'''
