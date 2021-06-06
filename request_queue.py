@@ -4,6 +4,7 @@ import main
 
 # This function gets the number of messages currently in the queue
 def get_req_queue_size():
+    
     client = main.get_sqs_client()
     response = client.receive_message(
         QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
@@ -36,10 +37,10 @@ def convert_image_to_string(file):
 
 # This function sends an image to the Request Queue
 def send_image_to_request_queue():
-    import main
+    #import main
     resource = main.get_sqs_resource()
 
-    file = 'test_0.JPEG'
+    file = 'test_2.JPEG'
     converted_string = convert_image_to_string(file)
 
     # Sending image to request queue:
@@ -99,8 +100,8 @@ def sqs_client():
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
-    first_result['Message ID'] = request['Messages'][0]['MessageId']
-    first_result['Message Body'] = request['Messages'][0]['Body']
+    first_result['Message ID'] = request['Messages'][1]['MessageId']
+    first_result['Message Body'] = request['Messages'][1]['Body']
     return first_result
 
 
@@ -117,10 +118,11 @@ def get_all_results(request):
     return all_results
 
 
-request = sqs_client()
-first_result = get_first_result(request)
-print(first_result)
+#request = sqs_client()
+#first_result = get_first_result(request)
+#print(first_result)
 
-all_results = get_all_results(request)
-print(all_results)
+#all_results = get_all_results(request)
+#print(all_results)
 
+#send_image_to_request_queue()

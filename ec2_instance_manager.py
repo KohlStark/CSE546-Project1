@@ -1,5 +1,7 @@
 import boto3
 
+
+
 def create_key_pair():
     print("Creating key pair")
     ec2_client = boto3.client("ec2", region_name="us-east-1")

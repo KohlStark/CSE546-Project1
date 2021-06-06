@@ -15,5 +15,5 @@ def uploadPicture(picPath, bucketName, s3Name):
 def downloadPicture(bucketName, s3Name, picPath):
     client.download_file(bucketName, s3Name, picPath)
 
-uploadPicture(images_path + firstarg, 'cse-546-picture-files', firstarg)
+#uploadPicture(images_path + firstarg, 'cse-546-picture-files', firstarg)
 #downloadPicture('cse-546-picture-files', 'test_0.JPEG', download_path + 'test_0.JPEG')

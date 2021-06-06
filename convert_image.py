@@ -1,3 +1,4 @@
+import boto3
 
 # This function converts a jpeg image to a string
 def convert_image_to_string(file):
@@ -66,15 +67,18 @@ def send_result_S3(result):
 
 
 #Converting file to sttring and vice versa:
-file = 'test_0.JPEG'
-converted_string = convert_image_to_string(file)
-image_filename = convert_image_to_jpeg(converted_string)
+#file = 'test_2.JPEG'
+#converted_string = convert_image_to_string(file)
+
+#print(converted_string)
+#image_filename = convert_image_to_jpeg(converted_string)
 
 
 # Sending results to response queue and S3 at the same time:
-import boto3
 
-result = classify_image()
-send_result_response_queue(result)
-send_result_S3(result)
+#image_filename = convert_image_to_jpeg(string)
+
+#result = classify_image()
+#send_result_response_queue(result)
+#send_result_S3(result)
 
