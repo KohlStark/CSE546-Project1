@@ -1,5 +1,4 @@
 import boto3
-import os
 
 def create_key_pair():
     print("Creating key pair")
@@ -45,7 +44,6 @@ def start_instance(instance_id):
     #update_instance_state(instanceid,1) # setting value for this instance as one in s3 bucket.
    
 def bulk_start_instances(instance_ids):
-    instance_ids.remove("i-0c6fe4c893fc48b1d")
     print("Starting these instances", instance_ids)
     for i in instance_ids:
         start_instance(i)
@@ -58,6 +56,8 @@ def stop_instance(instance_id):
 
 def bulk_stop_instances(instance_ids):
     instance_ids.remove("i-0c6fe4c893fc48b1d")
+    instance_ids.remove("i-0885788ef6811d11e")
+    #i-0885788ef6811d11e
     print("Stopping these instances", instance_ids)
     for i in instance_ids:
         stop_instance(i)
@@ -78,18 +78,59 @@ def get_running_instances():
             instance_type = instance["InstanceType"]
             public_ip = instance["PublicIpAddress"]
             private_ip = instance["PrivateIpAddress"]
-            print("Here are your instances:")
             print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
             instance_list.append(instance_id)
+    print("Here are your instances:", instance_list)
     return instance_list
-            
+
+def get_stopped_instances():
+    instance_list = []
+    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    reservations = ec2_client.describe_instances(Filters=[
+        {
+            "Name": "instance-state-name",
+            "Values": ["stopped"],
+        }
+    ]).get("Reservations")
+
+    for reservation in reservations:
+        for instance in reservation["Instances"]:
+            instance_id = instance["InstanceId"]
+            instance_type = instance["InstanceType"]            
+            print(f"{instance_id}, {instance_type}")
+            instance_list.append(instance_id)
+    print("Here are your instances:", instance_list)
+    return instance_list    
+
+def terminate_instance(instance_id):
+    print("Terminating instance:", instance_id)
+    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    response = ec2_client.terminate_instances(InstanceIds=[instance_id])
+    print(response)
+
+def stop_and_terminate(instance_id):
+    stop_instance(instance_id)
+    terminate_instance(instance_id)
+
+def bulk_stop_and_terminate(instance_ids):
+    instance_ids.remove("i-0c6fe4c893fc48b1d")
+    instance_ids.remove("i-0885788ef6811d11e")
+    print("Deleting these instances", instance_ids)
+    for i in instance_ids:
+        stop_instance(i)
+        terminate_instance(i)
+
 
 #create_key_pair()
 #create_instance()
-#bulk_create_instances(19)
+#bulk_create_instances(5)
 
 #stop_instance("i-096b2fa8bbc536c4b")
-#instance_list = get_running_instances()
-#bulk_stop_instances(instance_list)
+#running_instance_list = get_running_instances()
+#bulk_stop_instances(running_instance_list)
+#bulk_stop_and_terminate(running_instance_list)
+
+#stopped_instance_list = get_stopped_instances()
+#bulk_start_instances(stopped_instance_list)
 
 
