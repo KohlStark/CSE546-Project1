@@ -80,5 +80,47 @@ def delete_request_message():
     r = f' Deleted message at index: {message_index} '
     return r
 
+def sqs_client():
+    client = main.get_sqs_client()
+    request = client.receive_message(
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        AttributeNames=[
+        ],
+        MessageAttributeNames=[
+            'string',
+        ],
+        MaxNumberOfMessages=10,
+        VisibilityTimeout=10,
+        WaitTimeSeconds=10,
+    )
 
+    return request
+
+# This function gets the first result in the response queue:
+def get_first_result(request):
+    first_result = {}
+    first_result['Message ID'] = request['Messages'][0]['MessageId']
+    first_result['Message Body'] = request['Messages'][0]['Body']
+    return first_result
+
+
+# This function gets all the results in the response queue:
+def get_all_results(request):
+    all_results = {}
+
+    messages_length = len(request['Messages'])
+
+    for i in range(0, messages_length):
+        all_results[f'Message {i} ID '] = request['Messages'][i]['MessageId']
+        all_results[f'Message {i} Body'] = request['Messages'][i]['Body']
+
+    return all_results
+
+
+request = sqs_client()
+first_result = get_first_result(request)
+print(first_result)
+
+all_results = get_all_results(request)
+print(all_results)
 
