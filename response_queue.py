@@ -52,9 +52,22 @@ def convert_string_to_jpeg(converted_string):
     return image_filename
 
 
-response = sqs_client()
-first_result = get_first_result(response)
-all_results = get_all_results(response)
+#response = sqs_client()
+#first_result = get_first_result(response)
+#all_results = get_all_results(response)
 
 #Converting string back to its jpeg file form
-convert_string_to_jpeg(str(first_result['Message Body']))
+#convert_string_to_jpeg(str(first_result['Message Body']))
+
+def send_string_to_response_queue(output_string):
+    #import main
+    resource = main.get_sqs_resource()
+
+    #file = 'test_2.JPEG'
+    #converted_string = convert_image_to_string(file)
+
+    # Sending image to request queue:
+    queue = resource.get_queue_by_name(QueueName='response_queue_official.fifo')
+    response = queue.send_message(MessageBody=str(output_string), MessageGroupId='Admin')
+    print("Image sent to response queue")
+    return response

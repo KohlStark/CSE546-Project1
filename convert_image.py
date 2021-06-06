@@ -17,6 +17,7 @@ def convert_image_to_string(file):
 def convert_image_to_jpeg(converted_string):
     import base64
 
+    print(converted_string)
     image_data = base64.b64decode(converted_string)
     image_filename = 'test_0_converted.JPEG'
     with open(image_filename, 'wb') as f:
@@ -67,8 +68,8 @@ def send_result_S3(result):
 
 
 #Converting file to sttring and vice versa:
-#file = 'test_2.JPEG'
-#converted_string = convert_image_to_string(file)
+file = 'test_2.JPEG'
+converted_string = convert_image_to_string(file)
 
 #print(converted_string)
 #image_filename = convert_image_to_jpeg(converted_string)

@@ -8,6 +8,7 @@ def get_req_queue_size():
     client = main.get_sqs_client()
     response = client.receive_message(
         QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -46,6 +47,7 @@ def send_image_to_request_queue():
     # Sending image to request queue:
     queue = resource.get_queue_by_name(QueueName='request_queue_official.fifo')
     response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
+    print("image sent to queue")
     return response
 
 # This function deletes an image from the request Queue
@@ -53,7 +55,8 @@ def delete_request_message():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        #QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -74,7 +77,8 @@ def delete_request_message():
 
     # Deleting message:
     client.delete_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        #QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
         ReceiptHandle=receipt_handle
     )
 
@@ -100,8 +104,8 @@ def sqs_client():
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
-    first_result['Message ID'] = request['Messages'][1]['MessageId']
-    first_result['Message Body'] = request['Messages'][1]['Body']
+    first_result['Message ID'] = request['Messages'][0]['MessageId']
+    first_result['Message Body'] = request['Messages'][0]['Body']
     return first_result
 
 
@@ -126,3 +130,4 @@ def get_all_results(request):
 #print(all_results)
 
 #send_image_to_request_queue()
+#delete_request_message()

@@ -14,13 +14,16 @@ request = request_queue.sqs_client()
 result = request_queue.get_first_result(request)
 print("Got image from request queue")
 request_string = result['Message Body']
-sliced_string = request_string[1:]
+#sliced_string = request_string[1:]
+#slice = sliced_string[:-1]
 #print(sliced_string)
 
 string_image = result['Message Body']
-image_filename = convert_image.convert_image_to_jpeg(sliced_string)
+image_filename = convert_image.convert_image_to_jpeg(request_string)
 
 classification_result = image_classification.image_classification(image_filename)
+
+
 
 
 
