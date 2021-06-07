@@ -6,7 +6,7 @@ import main
 def get_req_queue_size():
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -16,21 +16,15 @@ def get_req_queue_size():
         VisibilityTimeout=10,
         WaitTimeSeconds=10,
     )
-    print(response)
-    flag = False
+    #print(response)
     size = 0
-    return_statement = ''
     try:
         # Parsing json to get size:
         size = len(response['Messages'])
     except:
-        flag = True
-        return_statement = "Currently the size of the request queue is 0."
 
-    if flag == False:
-        return size
-    else:
-        return return_statement
+        size = 0
+    return size
 
 
 # This function converts a jpeg image to a string
@@ -54,7 +48,7 @@ def send_image_to_request_queue():
     converted_string = convert_image_to_string(file)
 
     # Sending image to request queue:
-    queue = resource.get_queue_by_name(QueueName='request_queue_official.fifo')
+    queue = resource.get_queue_by_name(QueueName='request_queue_official')
     response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
     return response
 
@@ -63,7 +57,7 @@ def delete_request_message():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -75,8 +69,9 @@ def delete_request_message():
     )
 
     # Asking user which message they want to delete:
-    message_index = input("Enter the index of the message you want to delete: ")
-    message_index = int(message_index)
+    # message_index = input("Enter the index of the message you want to delete: ")
+    # message_index = int(message_index)
+    message_index = 0
 
     try:
         message = response['Messages'][message_index]
@@ -85,7 +80,7 @@ def delete_request_message():
 
         # Deleting message:
         client.delete_message(
-            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
             ReceiptHandle=receipt_handle
         )
         r = f' Deleted message at index: {message_index} '
@@ -100,7 +95,7 @@ def delete_all_request_message():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -119,7 +114,7 @@ def delete_all_request_message():
 
             # Deleting message:
             client.delete_message(
-                QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+                QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
                 ReceiptHandle=receipt_handle
             )
 
@@ -131,7 +126,7 @@ def delete_all_request_message():
 def sqs_client():
     client = main.get_sqs_client()
     request = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -147,9 +142,9 @@ def sqs_client():
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
-    first_result['Message ID'] = request['Messages'][1]['MessageId']
-    first_result['Message Body'] = request['Messages'][1]['Body']
-    first_result['MessageAttributes'] = request['Messages'][1]['MessageAttributes']
+    first_result['Message ID'] = request['Messages'][0]['MessageId']
+    first_result['Message Body'] = request['Messages'][0]['Body']
+    first_result['MessageAttributes'] = request['Messages'][0]['MessageAttributes']
     return first_result
 
 
@@ -165,3 +160,4 @@ def get_all_results(request):
 
     return all_results
 
+#delete_all_request_message()

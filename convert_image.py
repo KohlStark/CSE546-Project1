@@ -54,7 +54,8 @@ def send_result_response_queue(result):
 # This function sends the result to the output bucket in S3 to be stored
 def send_result_S3(result):
     # Putting results into a text file:
-    f = open("result.txt", "w+")
+    write_file = result + ".txt"
+    f = open(write_file, "w+")
     f.write(result)
 
     # Sending text file to S3:
@@ -62,8 +63,8 @@ def send_result_S3(result):
                       aws_access_key_id='AKIAQLAIBKNOC25ZCNQS',
                       aws_secret_access_key='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')
 
-    with open("result.txt", 'rb') as f:
-        s3.upload_fileobj(f, 'output-bucket-cse-546', 'result.txt')
+    with open(write_file, 'rb') as f:
+        s3.upload_fileobj(f, 'output-bucket-cse-546', write_file)
     return
 
 

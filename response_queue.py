@@ -6,7 +6,7 @@ import main
 def sqs_client():
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -56,7 +56,7 @@ def convert_string_to_jpeg(converted_string):
 def get_res_queue_size():
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -88,7 +88,7 @@ def delete_response_message():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -111,7 +111,7 @@ def delete_response_message():
 
         # Deleting message:
         client.delete_message(
-            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
             ReceiptHandle=receipt_handle
         )
         r = f' Deleted message at index: {message_index} '
@@ -127,7 +127,7 @@ def delete_all_response_messages():
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
     response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[
@@ -146,7 +146,7 @@ def delete_all_response_messages():
 
             # Deleting message:
             client.delete_message(
-                QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+                QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
                 ReceiptHandle=receipt_handle
             )
 
@@ -164,7 +164,7 @@ def send_image_to_response_queue(my_string):
     #converted_string = convert_image_to_string(file)
 
     # Sending image to request queue:
-    queue = resource.get_queue_by_name(QueueName='response_queue_official.fifo')
+    queue = resource.get_queue_by_name(QueueName='response_queue_official')
     response = queue.send_message(MessageBody=str(my_string), MessageGroupId='Admin')
     print("Image sent to response queue")
     return response
@@ -184,3 +184,5 @@ all_results = get_all_results(response)
 string = convert_string_to_jpeg(str(first_result['Message Body']))
 print(string)
 '''
+#delete_all_response_messages()
+#delete_response_message()

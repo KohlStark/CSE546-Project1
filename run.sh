@@ -18,5 +18,8 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-/bin/echo "Hello World" >> /tmp/testfile.txt
+cd /home/ubuntu/classifier/
+python3 wrapper.py
+/bin/echo "Finished" >> /home/ubuntu/classifier/testfile.txt
+rm t*
 --//
