@@ -4,6 +4,7 @@ import sys
 import base64
 
 images_path = "/home/ubuntu/upload_images/"
+#images_path = "/Users/KohlStark/Documents/CSE546/CSE546-Project1/"
 firstarg=sys.argv[1]
 
 # This function converts a jpeg image to a string
@@ -28,7 +29,13 @@ def send_image_to_request_queue(file):
 
     # Sending image to request queue:
     queue = resource.get_queue_by_name(QueueName='request_queue_official.fifo')
-    response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
+    response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin',MessageAttributes = {
+        'image_name': {
+            "StringValue": firstarg,
+            "DataType": "String"
+
+        }
+    }, MessageDeduplicationId=file)
     print("Image:", file, "sent to queue as string")
     return response
 
@@ -41,7 +48,7 @@ def sqs_client():
         AttributeNames=[
         ],
         MessageAttributeNames=[
-            'string',
+            'All',
         ],
         MaxNumberOfMessages=10,
         VisibilityTimeout=10,
@@ -53,8 +60,11 @@ def sqs_client():
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
-    first_result['Message ID'] = request['Messages'][1]['MessageId']
-    first_result['Message Body'] = request['Messages'][1]['Body']
+    first_result['Message ID'] = request['Messages'][0]['MessageId']
+    first_result['Message Body'] = request['Messages'][0]['Body']
     return first_result
 
 send_image_to_request_queue(images_path + firstarg)
+
+#request = sqs_client()
+#print(request)

@@ -155,6 +155,20 @@ def delete_all_response_messages():
         print("No results are currently in the request queue!")
     return ' '
 
+    # This function sends an image to the Request Queue
+def send_image_to_response_queue(my_string):
+    #import main
+    resource = main.get_sqs_resource()
+
+    #file = 'test_0.JPEG'
+    #converted_string = convert_image_to_string(file)
+
+    # Sending image to request queue:
+    queue = resource.get_queue_by_name(QueueName='response_queue_official.fifo')
+    response = queue.send_message(MessageBody=str(my_string), MessageGroupId='Admin')
+    print("Image sent to response queue")
+    return response
+
 '''
 size = get_res_queue_size()
 print(size)

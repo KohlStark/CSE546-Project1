@@ -135,7 +135,7 @@ def sqs_client():
         AttributeNames=[
         ],
         MessageAttributeNames=[
-            'string',
+            'All',
         ],
         MaxNumberOfMessages=10,
         VisibilityTimeout=10,
@@ -147,8 +147,9 @@ def sqs_client():
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
-    first_result['Message ID'] = request['Messages'][0]['MessageId']
-    first_result['Message Body'] = request['Messages'][0]['Body']
+    first_result['Message ID'] = request['Messages'][1]['MessageId']
+    first_result['Message Body'] = request['Messages'][1]['Body']
+    first_result['MessageAttributes'] = request['Messages'][1]['MessageAttributes']
     return first_result
 
 
