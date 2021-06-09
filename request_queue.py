@@ -4,53 +4,38 @@ import main
 
 # This function gets the number of messages currently in the queue
 def get_req_queue_size():
-    client = main.get_sqs_client()
-    response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
-        AttributeNames=[
-        ],
-        MessageAttributeNames=[
-            'string',
-        ],
-        MaxNumberOfMessages=10,
-        VisibilityTimeout=10,
-        WaitTimeSeconds=10,
-    )
-    #print(response)
-    size = 0
-    try:
-        # Parsing json to get size:
-        size = len(response['Messages'])
-    except:
+    client = main.get_sqs_resource()
+    queue = client.get_queue_by_name(QueueName='request_queue_official')
+    print("getting queue length")
+    return int(queue.attributes.get('ApproximateNumberOfMessages'))
 
-        size = 0
-    return size
 
+# NOT BEING USED BELOW, DELTE IN FUTURE PUSH
 
 # This function converts a jpeg image to a string
-def convert_image_to_string(file):
-    import base64
-    with open(file, "rb") as image2string:
-        converted_string = base64.b64encode(image2string.read())
+# def convert_image_to_string(file):
+#     import base64
+#     with open(file, "rb") as image2string:
+#         converted_string = base64.b64encode(image2string.read())
 
-    with open('encode.bin', "wb") as file:
-        file.write(converted_string)
+#     with open('encode.bin', "wb") as file:
+#         file.write(converted_string)
 
-    return converted_string
+#     return converted_string
 
 
 # This function sends an image to the Request Queue
-def send_image_to_request_queue():
-    import main
-    resource = main.get_sqs_resource()
+# def send_image_to_request_queue():
+#     import main
+#     resource = main.get_sqs_resource()
 
-    file = 'test_0.JPEG'
-    converted_string = convert_image_to_string(file)
+#     file = 'test_0.JPEG'
+#     converted_string = convert_image_to_string(file)
 
-    # Sending image to request queue:
-    queue = resource.get_queue_by_name(QueueName='request_queue_official')
-    response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
-    return response
+#     # Sending image to request queue:
+#     queue = resource.get_queue_by_name(QueueName='request_queue_official')
+#     response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin')
+#     return response
 
 # This function deletes an image from the request Queue
 def delete_request_message():
@@ -161,3 +146,5 @@ def get_all_results(request):
     return all_results
 
 #delete_all_request_message()
+size = get_req_queue_size()
+print(size)

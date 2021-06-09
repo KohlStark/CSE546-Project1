@@ -23,7 +23,7 @@ def create_instance():
     print("Creating new instance")
     ec2_client = boto3.client("ec2", region_name="us-east-1")
     instances = ec2_client.run_instances(
-        ImageId="ami-0ee8cf7b8a34448a6",
+        ImageId="ami-0ff26d4650db20712",
         MinCount=1,
         MaxCount=1,
         InstanceType="t2.micro",
@@ -57,7 +57,7 @@ def stop_instance(instance_id):
 
 def bulk_stop_instances(instance_ids):
     instance_ids.remove("i-0c6fe4c893fc48b1d")
-    instance_ids.remove("i-0885788ef6811d11e")
+    instance_ids.remove("i-0371c9aaf4fa78271")
     #i-0885788ef6811d11e
     print("Stopping these instances", instance_ids)
     for i in instance_ids:
@@ -79,9 +79,54 @@ def get_running_instances():
             instance_type = instance["InstanceType"]
             public_ip = instance["PublicIpAddress"]
             private_ip = instance["PrivateIpAddress"]
-            print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
-            instance_list.append(instance_id)
-    print("Here are your instances:", instance_list)
+            #print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
+            if instance_id != "i-0c6fe4c893fc48b1d":
+                instance_list.append(instance_id)
+    #print("Here are your instances:", instance_list)
+    return instance_list
+
+def get_stopped_instances():
+    instance_list = []
+    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    reservations = ec2_client.describe_instances(Filters=[
+        {
+            "Name": "instance-state-name",
+            "Values": ["stopped"],
+        }
+    ]).get("Reservations")
+
+    for reservation in reservations:
+        for instance in reservation["Instances"]:
+            instance_id = instance["InstanceId"]
+            instance_type = instance["InstanceType"]
+            public_ip = instance["PublicIpAddress"]
+            private_ip = instance["PrivateIpAddress"]
+            #print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
+            if instance_id != "i-0c6fe4c893fc48b1d":
+                instance_list.append(instance_id)
+    #print("Here are your instances:", instance_list)
+    return instance_list
+
+def get_all_instances():
+    instance_list = []
+    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    reservations = ec2_client.describe_instances(Filters=[
+        {
+            "Name": "instance-state-name",
+            "Values": ["running", "stopped"],
+        }
+    ]).get("Reservations")
+
+    for reservation in reservations:
+        for instance in reservation["Instances"]:
+            instance_id = instance["InstanceId"]
+            instance_type = instance["InstanceType"]
+            public_ip = instance["PublicIpAddress"]
+            private_ip = instance["PrivateIpAddress"]
+            #print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
+            if instance_id != "i-0c6fe4c893fc48b1d":
+                instance_list.append(instance_id)
+    #print("Here are your instances:", instance_list)
     return instance_list
 
 def get_stopped_instances():
@@ -123,7 +168,7 @@ def bulk_stop_and_terminate(instance_ids):
 
 
 #create_key_pair()
-#create_instance()
+create_instance()
 #bulk_create_instances(5)
 
 #stop_instance("i-096b2fa8bbc536c4b")

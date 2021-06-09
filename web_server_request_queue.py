@@ -28,14 +28,14 @@ def send_image_to_request_queue(file):
     converted_string = convert_image_to_string(file)
 
     # Sending image to request queue:
-    queue = resource.get_queue_by_name(QueueName='request_queue_official.fifo')
-    response = queue.send_message(MessageBody=str(converted_string), MessageGroupId='Admin',MessageAttributes = {
+    queue = resource.get_queue_by_name(QueueName='request_queue_official')
+    response = queue.send_message(MessageBody=str(converted_string),MessageAttributes = {
         'image_name': {
             "StringValue": firstarg,
             "DataType": "String"
 
         }
-    }, MessageDeduplicationId=file)
+    })
     print("Image:", file, "sent to queue as string")
     return response
 
@@ -44,7 +44,7 @@ def send_image_to_request_queue(file):
 def sqs_client():
     client = main.get_sqs_client()
     request = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official.fifo',
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
         AttributeNames=[
         ],
         MessageAttributeNames=[

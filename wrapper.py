@@ -7,9 +7,17 @@ import requests
 
 #production = sys.argv[1]
 
+file1 = open("Begin.txt", "w")
+write_string = "begin"
+file1.write(write_string)
+
+
+
 response = requests.get('http://169.254.169.254/latest/meta-data/instance-id')
 instance_id = response.text
 print("Started instance (worker):", instance_id)
+
+
 
 queue_size = request_queue.get_req_queue_size()
 print("Queue size:", queue_size)
@@ -19,7 +27,7 @@ while queue_size > 0:
     request = request_queue.sqs_client()
     result = request_queue.get_first_result(request)
 
-    print("Got image from request queue", result)
+    print("Got image from request queue")
     image_name_from_message = result['MessageAttributes']['image_name']['StringValue']
     request_string = result['Message Body']
 
@@ -44,13 +52,15 @@ while queue_size > 0:
     # Get queue size
     queue_size = request_queue.get_req_queue_size()
     print("Result sent to S3")
+    print("New queue size", queue_size)
 
 # if production != 'test':
 #     print("Stopping instance:", instance_id)
 #     ec2_instance_manager.stop_instance(instance_id)
 
 
-
+file1.write("End")
+file1.close()
 
 
 

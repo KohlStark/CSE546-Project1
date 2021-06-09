@@ -18,8 +18,8 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-cd /home/ubuntu/classifier/
-python3 wrapper.py
-/bin/echo "Finished" >> /home/ubuntu/classifier/testfile.txt
-rm t*
+/bin/echo "Before Python " >> /home/ubuntu/classifier/before2.txt
+pip3 install boto3
+/usr/bin/python3 /home/ubuntu/classifier/wrapper.py
+/bin/echo "Finished" >> /home/ubuntu/classifier/after2.txt
 --//

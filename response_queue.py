@@ -165,7 +165,7 @@ def send_image_to_response_queue(my_string):
 
     # Sending image to request queue:
     queue = resource.get_queue_by_name(QueueName='response_queue_official')
-    response = queue.send_message(MessageBody=str(my_string), MessageGroupId='Admin')
+    response = queue.send_message(MessageBody=str(my_string))
     print("Image sent to response queue")
     return response
 
