@@ -130,15 +130,30 @@ def sqs_client():
     return request
 
 # This function gets the first result in the response queue:
-def get_first_result(request):
-    first_result = {}
-    #temp = request['Messages'][0]
-    first_result['Message ID'] = request['Messages'][0]['MessageId']
-    first_result['Message Body'] = request['Messages'][0]['Body']
-    first_result['MessageAttributes'] = request['Messages'][0]['MessageAttributes']
-    receipt_handle = request[
-        'Messages'][0]['ReceiptHandle']
-    return first_result, receipt_handle
+def get_first_result():
+    # first_result = {}
+    # #temp = request['Messages'][0]
+    # first_result['Message ID'] = request['Messages'][0]['MessageId']
+    # first_result['Message Body'] = request['Messages'][0]['Body']
+    # first_result['MessageAttributes'] = request['Messages'][0]['MessageAttributes']
+    # receipt_handle = request[
+    #     'Messages'][0]['ReceiptHandle']
+
+    client = main.get_sqs_resource()
+    queue = client.get_queue_by_name(QueueName='request_queue_official')
+    my_messages = queue.receive_messages(MessageAttributeNames=["image_name"],MaxNumberOfMessages=10)
+
+    for i in my_messages:
+        print("you should be printing stuipd")
+        print(i.body)
+
+
+
+      
+    #message = queue[0]
+    #print(message)
+    #return first_result, receipt_handle
+
 
 
 
@@ -158,6 +173,9 @@ def get_all_results(request):
 #temp = sqs_client()
 #print(temp)
 #size, handle = get_first_result(temp)
+
+get_first_result()
+
 
 #print(handle)
 #delete_request_message(handle)
