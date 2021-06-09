@@ -4,6 +4,7 @@ import response_queue
 import ec2_instance_manager
 import convert_image
 import requests
+import time
 
 #production = sys.argv[1]
 
@@ -23,16 +24,20 @@ queue_size = request_queue.get_req_queue_size()
 print("Queue size:", queue_size)
 
 while queue_size > 0:
+    #time.sleep(3)
+    print("New queue size", queue_size)
     print("Getting string image from request queue")
     request = request_queue.sqs_client()
-    result = request_queue.get_first_result(request)
+    print("request:", )
+    result, handle = request_queue.get_first_result(request)
+    print("printing first result", result)
 
     print("Got image from request queue")
     image_name_from_message = result['MessageAttributes']['image_name']['StringValue']
     request_string = result['Message Body']
 
     print("Removing image from request queue")
-    request_queue.delete_request_message()
+    request_queue.delete_request_message(handle)
 
     image_filename = convert_image.convert_image_to_jpeg(request_string)
     print("Finished converting image")
@@ -51,8 +56,9 @@ while queue_size > 0:
 
     # Get queue size
     queue_size = request_queue.get_req_queue_size()
+
     print("Result sent to S3")
-    print("New queue size", queue_size)
+    
 
 # if production != 'test':
 #     print("Stopping instance:", instance_id)

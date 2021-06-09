@@ -38,40 +38,44 @@ def get_req_queue_size():
 #     return response
 
 # This function deletes an image from the request Queue
-def delete_request_message():
+def delete_request_message(handle):
     # Retrieving all messages in queue:
     client = main.get_sqs_client()
-    response = client.receive_message(
+    client.delete_message(
         QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
-        AttributeNames=[
-        ],
-        MessageAttributeNames=[
-            'string'
-        ],
-        MaxNumberOfMessages=10,
-        VisibilityTimeout=10,
-        WaitTimeSeconds=10,
+        ReceiptHandle=handle
     )
+    # response = client.receive_message(
+    #     QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
+    #     AttributeNames=[
+    #     ],
+    #     MessageAttributeNames=[
+    #         'string'
+    #     ],
+    #     MaxNumberOfMessages=10,
+    #     VisibilityTimeout=10,
+    #     WaitTimeSeconds=10,
+    # )
 
     # Asking user which message they want to delete:
     # message_index = input("Enter the index of the message you want to delete: ")
     # message_index = int(message_index)
-    message_index = 0
+    #message_index = 0
 
-    try:
-        message = response['Messages'][message_index]
+    # try:
+    #     message = response['Messages'][message_index]
 
-        receipt_handle = message['ReceiptHandle']
+    #     receipt_handle = message['ReceiptHandle']
 
-        # Deleting message:
-        client.delete_message(
-            QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
-            ReceiptHandle=receipt_handle
-        )
-        r = f' Deleted message at index: {message_index} '
-        print(r)
-    except:
-        print("No results are currently in the request queue!")
+    #     # Deleting message:
+    #     client.delete_message(
+    #         QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
+    #         ReceiptHandle=receipt_handle
+    #     )
+    #     r = f' Deleted message at index: {message_index} '
+    #     print(r)
+    # except:
+    #     print("No results are currently in the request queue!")
 
     return ''
 
@@ -122,15 +126,20 @@ def sqs_client():
         WaitTimeSeconds=10,
     )
 
+
     return request
 
 # This function gets the first result in the response queue:
 def get_first_result(request):
     first_result = {}
+    #temp = request['Messages'][0]
     first_result['Message ID'] = request['Messages'][0]['MessageId']
     first_result['Message Body'] = request['Messages'][0]['Body']
     first_result['MessageAttributes'] = request['Messages'][0]['MessageAttributes']
-    return first_result
+    receipt_handle = request[
+        'Messages'][0]['ReceiptHandle']
+    return first_result, receipt_handle
+
 
 
 # This function gets all the results in the response queue:
@@ -146,5 +155,10 @@ def get_all_results(request):
     return all_results
 
 #delete_all_request_message()
-size = get_req_queue_size()
-print(size)
+#temp = sqs_client()
+#print(temp)
+#size, handle = get_first_result(temp)
+
+#print(handle)
+#delete_request_message(handle)
+#print('deleted')
