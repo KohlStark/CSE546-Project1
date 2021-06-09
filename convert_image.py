@@ -60,8 +60,8 @@ def send_result_S3(result):
 
     # Sending text file to S3:
     s3 = boto3.client('s3', region_name='us-east-1',
-                      aws_access_key_id='AKIAQLAIBKNOC25ZCNQS',
-                      aws_secret_access_key='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')
+                      aws_access_key_id='AKIAQLAIBKNOPOF6AUHT',
+                      aws_secret_access_key='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')
 
     with open(write_file, 'rb') as f:
         s3.upload_fileobj(f, 'output-bucket-cse-546', write_file)
