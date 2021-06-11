@@ -168,7 +168,7 @@ def bulk_stop_and_terminate(instance_ids):
 
 
 #create_key_pair()
-create_instance()
+#create_instance()
 #bulk_create_instances(5)
 
 #stop_instance("i-096b2fa8bbc536c4b")

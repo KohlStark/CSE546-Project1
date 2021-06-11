@@ -3,21 +3,6 @@ from typing import List, Any
 
 import main
 
-def sqs_client():
-    client = main.get_sqs_client()
-    response = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/response_queue_official',
-        AttributeNames=[
-        ],
-        MessageAttributeNames=[
-            'string',
-        ],
-        MaxNumberOfMessages=10,
-        VisibilityTimeout=10,
-        WaitTimeSeconds=10,
-    )
-
-    return response
 
 # This function gets the first result in the response queue:
 def get_first_result(response):

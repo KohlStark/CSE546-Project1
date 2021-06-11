@@ -17,7 +17,7 @@ def image_classification(image):
     outputs = model(img_tensor)
     _, predicted = torch.max(outputs.data, 1)
 
-    with open('imagenet-labels.json') as f:
+    with open('/home/ubuntu/classifier/imagenet-labels.json') as f:
         labels = json.load(f)
     result = labels[np.array(predicted)[0]]
     print("Image classification result:", result)

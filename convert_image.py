@@ -15,12 +15,12 @@ def convert_image_to_string(file):
 
 
 # This function converts the string image to it's original format
-def convert_image_to_jpeg(converted_string):
+def convert_image_to_jpeg(converted_string, name):
     import base64
 
     #print(converted_string)
     image_data = base64.b64decode(converted_string)
-    image_filename = 'test_0_converted.JPEG'
+    image_filename = name
     with open(image_filename, 'wb') as f:
         f.write(image_data)
 
