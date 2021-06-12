@@ -1,7 +1,7 @@
 import image_classification
 #import request_queue
 import response_queue
-#import ec2_instance_manager
+import ec2_instance_manager
 import convert_image
 import requests
 #import time
@@ -51,8 +51,7 @@ while queue_size > 0:
 
 
 # if production != 'test':
-#     print("Stopping instance:", instance_id)
-#     ec2_instance_manager.stop_instance(instance_id)
+ec2_instance_manager.stop_instance(instance_id)
 
 
 #file1.write("End")

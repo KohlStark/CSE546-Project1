@@ -1,12 +1,14 @@
 from numpy.lib.function_base import diff
 import ec2_instance_manager
 import boto3
-import request_queue
 import time
+import main
 
 
 def auto_scale_instances():
-    queue_length = request_queue.get_req_queue_size()
+    client = main.get_sqs_resource()
+    queue = client.get_queue_by_name(QueueName='request_queue_official')
+    queue_length = int(queue.attributes['ApproximateNumberOfMessages'])
 
     # all_instances = ec2_instance_manager.get_all_instances()
     # print("All instances:", all_instances)
@@ -16,7 +18,7 @@ def auto_scale_instances():
 
     if queue_length == 0:
         print("Queue is empty, shutting down all instances (downscaling)")
-        ec2_instance_manager.bulk_stop_instances()
+        #ec2_instance_manager.bulk_stop_instances()
         return
 
     else:
@@ -31,13 +33,17 @@ def auto_scale_instances():
             difference = min(queue_length, num_of_available_instaces)
 
             if difference == 0:
+                print("diff was zero")
                 return # have instances = to queue size
             else:
-                del_num = num_of_available_instaces - queue_length
-                if del_num > 0:
-                    temp_list = stopped_instances
-                    del temp_list[:del_num]
-                    ec2_instance_manager.bulk_start_instances(temp_list)
+                ec2_instance_manager.bulk_start_instances(stopped_instances)
+                # print("diff was not zero")
+                # del_num = num_of_available_instaces - queue_length
+                # print("del num", del_num)
+                # if del_num > 0:
+                #     temp_list = stopped_instances
+                #     del temp_list[:del_num]
+                #     ec2_instance_manager.bulk_start_instances(temp_list)
 
     
                 

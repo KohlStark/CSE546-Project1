@@ -1,4 +1,5 @@
 import boto3
+import main
 
 
 def create_key_pair():
@@ -21,9 +22,9 @@ def get_public_ip(instance_id):
 
 def create_instance():
     print("Creating new instance")
-    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    ec2_client = main.get_ec2_client()
     instances = ec2_client.run_instances(
-        ImageId="ami-0ff26d4650db20712",
+        ImageId="ami-0f1955d89b939abdf",
         MinCount=1,
         MaxCount=1,
         InstanceType="t2.micro",
@@ -39,7 +40,7 @@ def bulk_create_instances(num):
 
 def start_instance(instance_id):
     print('Starting instance with ID:',instance_id)
-    ec2 = boto3.client("ec2", region_name="us-east-1")
+    ec2 = main.get_ec2_client()
     response = ec2.start_instances(InstanceIds=[instance_id], DryRun=False)
     print(response)
     #update_instance_state(instanceid,1) # setting value for this instance as one in s3 bucket.
@@ -51,7 +52,7 @@ def bulk_start_instances(instance_ids):
 
 def stop_instance(instance_id):
     print("Stopping instance:", instance_id)
-    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    ec2_client = main.get_ec2_client()
     response = ec2_client.stop_instances(InstanceIds=[instance_id])
     print(response)
 
@@ -65,7 +66,7 @@ def bulk_stop_instances(instance_ids):
 
 def get_running_instances():
     instance_list = []
-    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    ec2_client = main.get_ec2_client()
     reservations = ec2_client.describe_instances(Filters=[
         {
             "Name": "instance-state-name",
@@ -87,7 +88,7 @@ def get_running_instances():
 
 def get_stopped_instances():
     instance_list = []
-    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    ec2_client = main.get_ec2_client()
     reservations = ec2_client.describe_instances(Filters=[
         {
             "Name": "instance-state-name",
@@ -131,7 +132,7 @@ def get_all_instances():
 
 def get_stopped_instances():
     instance_list = []
-    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    ec2_client = main.get_ec2_client()
     reservations = ec2_client.describe_instances(Filters=[
         {
             "Name": "instance-state-name",

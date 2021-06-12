@@ -40,30 +40,6 @@ def send_image_to_request_queue(file):
     return response
 
 
-
-def sqs_client():
-    client = main.get_sqs_client()
-    request = client.receive_message(
-        QueueUrl='https://sqs.us-east-1.amazonaws.com/023639184220/request_queue_official',
-        AttributeNames=[
-        ],
-        MessageAttributeNames=[
-            'All',
-        ],
-        MaxNumberOfMessages=10,
-        VisibilityTimeout=10,
-        WaitTimeSeconds=10,
-    )
-
-    return request
-
-# This function gets the first result in the response queue:
-def get_first_result(request):
-    first_result = {}
-    first_result['Message ID'] = request['Messages'][0]['MessageId']
-    first_result['Message Body'] = request['Messages'][0]['Body']
-    return first_result
-
 send_image_to_request_queue(images_path + firstarg)
 
 #request = sqs_client()
