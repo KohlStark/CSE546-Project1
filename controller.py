@@ -51,16 +51,7 @@ def auto_scale_instances():
         else:
             return
 
-
-
-
-
-
-
-            
-            
-
-
 while True:
+    print("starting auto scaling")
     auto_scale_instances()
     time.sleep(30)

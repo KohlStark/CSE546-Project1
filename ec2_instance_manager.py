@@ -144,7 +144,7 @@ def get_stopped_instances():
         for instance in reservation["Instances"]:
             instance_id = instance["InstanceId"]
             instance_type = instance["InstanceType"]            
-            print(f"{instance_id}, {instance_type}")
+            #print(f"{instance_id}, {instance_type}")
             instance_list.append(instance_id)
     print("Here are your instances:", instance_list)
     return instance_list    
@@ -170,7 +170,7 @@ def bulk_stop_and_terminate(instance_ids):
 
 #create_key_pair()
 #create_instance()
-#bulk_create_instances(5)
+bulk_create_instances(4)
 
 #stop_instance("i-096b2fa8bbc536c4b")
 #running_instance_list = get_running_instances()
