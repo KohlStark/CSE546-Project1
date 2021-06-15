@@ -42,6 +42,11 @@ server.post('/', upload.single('myfile'), function(request, respond) {
   });
 
   respond.end(request.file.originalname + ' uploaded!');
+  //print classification result
+  const response_queue_python = spawn('python', ['/home/ubuntu/s3_uploader/results.py', request.file.filename])
+  response_queue_python.stdout.on('data', function(data) {
+    console.log(data.toString());
+  });
 });
 
 // You need to configure node.js to listen on 0.0.0.0 so it will be able to accept connections on all the IPs of your machine
