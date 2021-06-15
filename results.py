@@ -1,4 +1,5 @@
 import response_queue
+import sys
 import main
 
 client = main.get_sqs_resource()
@@ -13,7 +14,7 @@ while True:
         response_name = msg.message_attributes.get('image_name').get('StringValue')
         # print so it goes to stdout, which (i think) will route it to the response_queue_poller.stdout.on call
         # in test_app.js
-        print(str(response_name) + ": " + str(response_string))
+        sys.stdout.write(str(response_name) + ": " + str(response_string))
 
         # remove message from response queue after processing it
         msg.delete()
