@@ -141,7 +141,7 @@ def delete_all_response_messages():
     return ' '
 
     # This function sends an image to the Request Queue
-def send_image_to_response_queue(my_string):
+def send_image_to_response_queue(my_string, my_attr):
     #import main
     resource = main.get_sqs_resource()
 
@@ -150,7 +150,12 @@ def send_image_to_response_queue(my_string):
 
     # Sending image to request queue:
     queue = resource.get_queue_by_name(QueueName='response_queue_official')
-    response = queue.send_message(MessageBody=str(my_string))
+    response = queue.send_message(MessageBody=str(my_string), MessageAttributes = {
+        'image_name': {
+            'StringValue': str(my_attr),
+            'DataType': 'String'
+        }
+    })
     print("Image sent to response queue")
     return response
 

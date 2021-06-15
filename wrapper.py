@@ -9,7 +9,6 @@ import requests
 import main
 
 #production = sys.argv[1]
-REQUEST_MAP = {}
 '''file1 = open("Begin.txt", "w")
 write_string = "begin"
 file1.write(write_string)
@@ -35,9 +34,9 @@ while queue_size > 0:
         classification_result = image_classification.image_classification(image_filename)
 
         return_string = image_filename + ", " + classification_result
-        REQUEST_MAP[image_filename] = "(" + image_filename + ", " + classification_result + ")"
+
         # Send classified image to response queue
-        response_queue.send_image_to_response_queue(return_string)
+        response_queue.send_image_to_response_queue(return_string, str(msg.message_attributes.get('image_name').get('StringValue')))
 
         # Send result to S3
         print("Result sent to S3")
