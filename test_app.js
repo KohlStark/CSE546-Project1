@@ -13,16 +13,20 @@ var outputs = []
 
 // call response queue polling loop
 const response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py'])
-// on poller printing (I think), take that data and save it in dictionary
+// on poller printing, take that data and save it in dictionary
 // key: Image name, value: output pair, e.g. (test_0, bathtub)
 response_queue_poller.stdout.on('data', function(data) {
-  //if (err) console.log(err);
-  console.log(data.toString());
-  var str = data.toString(), dict_vals = str.split(":");
-  outputs.push({
-    key: dict_vals[0],
-    value: dict_vals[1]
-  });
+        console.log("DATA");
+        console.log(data.toString());
+        //var str = data.toString(), dict_vals = str.split(":");
+        //outputs.push({
+        //      key: dict_vals[0],
+        //      value: dict_vals[1]
+        //});
+});
+
+response_queue_poller.stdout.on('end', function(data) {
+        console.log(data.toString());
 });
 
 controller.stdout.on('data', function(data) {

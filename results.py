@@ -1,4 +1,4 @@
-import response_queue
+#import response_queue
 import sys
 import main
 import time
@@ -12,15 +12,11 @@ while True:
         # save body (the pair) and message attribute (the name)
         response_string = msg.body
         response_name = str(msg.body).split(", ")
-        #print("Got message, writing to sys.stdout")
-        #print("Message name: " + response_name[0])
-        #print("Message body: " + response_string)
-        # print so it goes to stdout, which (i think) will route it to the response_queue_poller.stdout.on call
+        # print so it goes to stdout, which will route it to the response_queue_poller.stdout.on call
         # in test_app.js
-        print(str(response_name[0]) + ": " + str(response_string))
+        print(str(response_name[0]) + ": (" + str(response_name[0][:-5]) + ", " + str(response_name[1]) + ")")
         sys.stdout.flush()
 
-        #print("Removing message")
         # remove message from response queue after processing it
         msg.delete()
-    #time.sleep(5)
+        time.sleep(1)
