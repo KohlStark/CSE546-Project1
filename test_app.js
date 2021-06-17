@@ -9,11 +9,11 @@ const {spawn} = require('child_process');
 const controller = spawn('python', ['/home/ubuntu/ec2_controller/controller.py']);
 
 // save classification results
-var outputs = []
+//var outputs = []
 
 // call response queue polling loop
 const response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py'])
-// on poller printing, take that data and save it in dictionary
+// on poller printing (I think), take that data and save it in dictionary
 // key: Image name, value: output pair, e.g. (test_0, bathtub)
 response_queue_poller.stdout.on('data', function(data) {
         console.log("DATA");
@@ -23,6 +23,14 @@ response_queue_poller.stdout.on('data', function(data) {
         //      key: dict_vals[0],
         //      value: dict_vals[1]
         //});
+        //console.log(dict_vals);
+});
+
+//console.log(outputs);
+
+response_queue_poller.stderr.on('data', function(data) {
+        console.log("ERR");
+        console.log(data.toString());
 });
 
 response_queue_poller.stdout.on('end', function(data) {
