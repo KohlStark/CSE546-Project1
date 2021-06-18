@@ -6,12 +6,30 @@ const PORT = 3000;
 const {spawn} = require('child_process');
 const { response } = require('express');
 
+var response_queue_poller;
+
+
+var flag = false;
+
+
+server.use(express.urlencoded());
+server.use(express.json());
+
 
 const controller = spawn('python', ['/home/ubuntu/ec2_controller/controller.py']);
 
 controller.stdout.on('data', function(data) {
   console.log(data.toString());
 });
+
+//const response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py', request.body.num]);
+// on poller printing (I think), take that data and save it in dictionary
+// key: Image name, value: output pair, e.g. (test_0, bathtub)
+
+// response_queue_poller.stdout.on('data', function(data) 
+// {
+//   console.log(data.toString());
+// });
 
 
 // uploaded images are saved in the folder "/upload_images"
@@ -46,28 +64,58 @@ server.post('/', upload.single('myfile'), function(request, respond) {
   respond.end(request.file.originalname + ' uploaded!');
 });
 
-server.use(express.urlencoded());
-server.use(express.json());
 
-server.post('/response_queue', function(request, respond) {
+
+server.post('/response_queue', function(request, respond) 
+{
   console.log("Starting response queue poller", request.body.num);
-  const response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py', request.body.num]);
+
+
+    //code that causes an error
+    const fs = require('fs');
+    // fs.unlink('/home/ubuntu/outputs.txt');
+    // console.log("File outputs.txt is deleted.");
+
+    fs.unlink('/home/ubuntu/outputs.txt', (err => {
+      if (err) console.log(err);
+      else {
+        console.log("\nDeleted file: /home/ubuntu/outputs.txt");
+      
+        // Get the files in current diectory
+        // after deletion
+      }
+    }));
+  response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py', request.body.num]);
 // on poller printing (I think), take that data and save it in dictionary
 // key: Image name, value: output pair, e.g. (test_0, bathtub)
-  response_queue_poller.stdout.on('data', function(data) {
-        console.log("DATA");
-        console.log(data.toString());
-  //response.end()
 
- });
+  response_queue_poller.stdout.on('data', function(data) 
+  {
+    console.log(data.toString());
+
+  });
+  respond.end();
+  // response_queue_poller.stdout.on('end', function(data) 
+  // {
+  //   respond.end("Finished");
+  // });
   
-
+// });
 });
 
-// server.get("/", function(req, res){
-//   path = "/home/ubuntu/outputs.txt"
-//   res.sendFile(path);
-// });
+server.get("/kill", function(req, res){
+  response_queue_poller.kill('SIGINT');
+  //res.send('KILLED');
+  
+});
+
+server.get("/", function(req, res){
+  //console.log("get request!");
+  const path = "/home/ubuntu/outputs.txt";
+  res.sendFile(path);
+
+  
+});
 
 // You need to configure node.js to listen on 0.0.0.0 so it will be able to accept connections on all the IPs of your machine
 const hostname = '0.0.0.0';

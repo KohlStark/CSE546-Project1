@@ -25,29 +25,26 @@ def auto_scale_instances():
         running_instances = ec2_instance_manager.get_running_instances()
         running_instances_size = len(running_instances)
         print("Running instances:", running_instances)
+        if running_instances_size == 19:
+            print("Im at max capacity")
+            return
         
         
+        # we need to scale up
         if running_instances_size < queue_length:
             stopped_instances = ec2_instance_manager.get_stopped_instances()
             num_of_available_instaces = len(stopped_instances)
-            difference = min(queue_length, num_of_available_instaces)
 
-            if difference == 0:
-                print("diff was zero")
-                return # have instances = to queue size
-            else:
+            del_num = num_of_available_instaces - queue_length
+            print("del num", del_num)
+            if del_num > 0:
+                temp_list = stopped_instances
+                del temp_list[:del_num]
+                ec2_instance_manager.bulk_start_instances(temp_list)
+            if del_num < 0:
                 ec2_instance_manager.bulk_start_instances(stopped_instances)
-                # print("diff was not zero")
-                # del_num = num_of_available_instaces - queue_length
-                # print("del num", del_num)
-                # if del_num > 0:
-                #     temp_list = stopped_instances
-                #     del temp_list[:del_num]
-                #     ec2_instance_manager.bulk_start_instances(temp_list)
 
-    
-                
-        #elif running_instances_size == queue_length:
+
         else:
             return
 

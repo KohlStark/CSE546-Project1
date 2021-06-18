@@ -70,7 +70,7 @@ def get_running_instances():
     reservations = ec2_client.describe_instances(Filters=[
         {
             "Name": "instance-state-name",
-            "Values": ["running"],
+            "Values": ["running", "pending"],
         }
     ]).get("Reservations")
 
@@ -170,7 +170,7 @@ def bulk_stop_and_terminate(instance_ids):
 
 #create_key_pair()
 #create_instance()
-bulk_create_instances(4)
+#bulk_create_instances(4)
 
 #stop_instance("i-096b2fa8bbc536c4b")
 #running_instance_list = get_running_instances()

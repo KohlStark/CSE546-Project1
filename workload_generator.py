@@ -2,6 +2,7 @@ import sys
 import requests
 import os
 import argparse
+import time
 
 parser = argparse.ArgumentParser(description='Upload images')
 parser.add_argument('--num_request', type=int, help='one image per request')
@@ -19,6 +20,24 @@ def send_one_request(url, image_path):
     else :
         print(r.text)
 
+def send_response_queue_request(url, num):
+    r = requests.post(url + '/response_queue', data = {'num': num})
+    if r.status_code != 200:
+        print("Error")
+        print(r.request)
+        #print('Error: '+ r.request + r.json())
+    #else:
+        #print("success")
+        #print(r.text)
+    #print(r.content.decode())
+
+def get_results(url):
+    print("get request python")
+    r = requests.get(url)
+    print(r.content.decode())
+    return r.content.decode()
+
+
 num_request = args.num_request
 url = args.url
 image_folder = args.image_folder
@@ -28,3 +47,34 @@ for i, name in enumerate(os.listdir(image_folder)):
         break
     image_path = image_folder + name
     send_one_request(url, image_path)
+    time.sleep(0.5)
+
+send_response_queue_request(url, num_request)
+
+while True:
+    r = requests.get(url)
+    if "Error" in r.content.decode():
+        #print("no luck for now, trying again in 5")
+        time.sleep(5)
+        
+    elif "(" in r.content.decode():
+        #print(r.content.decode())
+        broken_string = r.content.decode().split('\n')
+        length = len(broken_string)
+        #print("length", length)
+        
+        if num_request == 1:
+            new_r = requests.get(url + "/kill")
+            print(new_r.content.decode())
+            print(r.content.decode())
+            break
+        if length - 1 == num_request:
+            new_r = requests.get(url + "/kill")
+            print(new_r.content.decode())
+            print(r.content.decode())
+            break
+    else:
+        #print("No results yet, sleeping for 5")
+        time.sleep(5)
+    
+    

@@ -7,6 +7,11 @@ images_path = "/home/ubuntu/upload_images/"
 #images_path = "/Users/KohlStark/Documents/CSE546/CSE546-Project1/"
 firstarg=sys.argv[1]
 
+def uploadPicture(picPath, bucketName, s3Name):
+    client = main.get_s3_client()
+    client.upload_file(picPath, bucketName, s3Name)
+    print("Success uploading", picPath, " to S3")
+
 # This function converts a jpeg image to a string
 def convert_image_to_string(file):
     
@@ -40,7 +45,9 @@ def send_image_to_request_queue(file):
     return response
 
 
+
 send_image_to_request_queue(images_path + firstarg)
+uploadPicture(images_path + firstarg, 'cse-546-picture-files', firstarg)
 
 #request = sqs_client()
 #print(request)

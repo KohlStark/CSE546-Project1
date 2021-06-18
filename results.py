@@ -11,16 +11,15 @@ firstarg = sys.argv[1]
 
 def printOutputs(num_requests):
     #check if output file exists
-    if os.path.exists('outputs.txt'):
-        os.remove('outputs.txt')
         
     #open file for writing
-    f = open("outputs.txt", "a")
+    f = open("/home/ubuntu/outputs.txt", "a+")
 
     #infinite loop to continuously poll the response queue
     requests_met = 0
     while True:
         if requests_met == num_requests:
+            f.close()
             return
         else:
             for msg in queue.receive_messages(MaxNumberOfMessages=10):
@@ -39,7 +38,9 @@ def printOutputs(num_requests):
 
                 #update requests_met
                 requests_met += 1
-                time.sleep(1)
+                print(requests_met, "-", num_requests)
+                sys.stdout.flush()
+                time.sleep(1.5)
             #time.sleep(5)
 
 printOutputs(firstarg)
