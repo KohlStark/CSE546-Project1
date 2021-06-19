@@ -81,7 +81,7 @@ def get_running_instances():
             public_ip = instance["PublicIpAddress"]
             private_ip = instance["PrivateIpAddress"]
             #print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
-            if instance_id != "i-0c6fe4c893fc48b1d":
+            if instance_id != "i-05863669b7cca308b":
                 instance_list.append(instance_id)
     #print("Here are your instances:", instance_list)
     return instance_list

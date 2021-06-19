@@ -21,6 +21,9 @@ const controller = spawn('python', ['/home/ubuntu/ec2_controller/controller.py']
 controller.stdout.on('data', function(data) {
   console.log(data.toString());
 });
+controller.stderr.on('data', function(data) {
+  console.log(data.toString());
+});
 
 //const response_queue_poller = spawn('python', ['/home/ubuntu/s3_uploader/results.py', request.body.num]);
 // on poller printing (I think), take that data and save it in dictionary
@@ -52,6 +55,9 @@ server.post('/', upload.single('myfile'), function(request, respond) {
   const request_queue_python = spawn('python', ['/home/ubuntu/s3_uploader/web_server_request_queue.py', request.file.originalname]);
 
   request_queue_python.stdout.on('data', function(data) {
+    console.log(data.toString());
+  });
+  request_queue_python.stderr.on('data', function(data) {
     console.log(data.toString());
   });
 
@@ -94,6 +100,11 @@ server.post('/response_queue', function(request, respond)
     console.log(data.toString());
 
   });
+  response_queue_poller.stderr.on('data', function(data) 
+  {
+    console.log(data.toString());
+
+  });
   respond.end();
   // response_queue_poller.stdout.on('end', function(data) 
   // {
@@ -105,7 +116,7 @@ server.post('/response_queue', function(request, respond)
 
 server.get("/kill", function(req, res){
   response_queue_poller.kill('SIGINT');
-  //res.send('KILLED');
+  res.send();
   
 });
 

@@ -1,4 +1,4 @@
-from numpy.lib.function_base import diff
+#from numpy.lib.function_base import diff
 import ec2_instance_manager
 import boto3
 import time

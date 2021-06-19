@@ -64,15 +64,16 @@ while True:
         #print("length", length)
         
         if num_request == 1:
-            new_r = requests.get(url + "/kill")
-            print(new_r.content.decode())
+            
             print(r.content.decode())
-            break
+            new_r = requests.get(url + "/kill")
+            sys.exit(0)
         if length - 1 == num_request:
-            new_r = requests.get(url + "/kill")
-            print(new_r.content.decode())
+            
+            
             print(r.content.decode())
-            break
+            new_r = requests.get(url + "/kill")
+            sys.exit(0)
     else:
         #print("No results yet, sleeping for 5")
         time.sleep(5)
